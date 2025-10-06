@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Validator - Validate Email in no time</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image" href="img/email.svg">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+            <img src="img/email.svg" alt="logo">
+            Validator</div>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+        <button class="hamburger">
+            <img src="img/hamburgerMenu.svg" alt="menu">
+        </button>
+      </nav>
+    </header>
+    <main>
+      <div class="container">
+        <h1>Enter your email to validate</h1>
+        <form>
+          <input
+            type="email"
+            id="email-address"
+            name="user_email"
+            placeholder="you@example.com"
+            required
+          />
+          <div><button id="main-btn" type="submit">Submit</button></div>
+        </form>
+        <div class="response hidden">
+          <h2>Your Results: </h2>
+          <div id="resultCont"></div>
+        </div>
+      </div>
+    </main>
+    <footer>© 2025 Validator. All Rights Reserved.</footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
