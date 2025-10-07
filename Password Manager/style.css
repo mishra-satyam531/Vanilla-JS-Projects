@@ -1,0 +1,171 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #121212;
+  font-family: "Noto Sans", sans-serif;
+}
+
+nav {
+  background: #1e1e1e;
+  color: #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 8px;
+  font-size: 24px;
+}
+nav a {
+  color: #a0aec0;
+  text-decoration: none;
+  gap: 5px;
+}
+nav .navLinks {
+  font-size: 18px;
+  display: flex;
+  gap: 15px;
+}
+
+main {
+  color: #e0e0e0;
+  /* background: red; */
+  width: 80vw;
+  margin: auto;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.add input {
+  width: 25%;
+  padding: 8px 12px;
+  font-size: 1rem;
+  background-color: #2c3e50;
+  color: #e2e8f0;
+  border: 2px solid #4a5568;
+  border-radius: 5px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+.add input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+.add input::placeholder {
+  color: #a0aec0;
+  opacity: 1;
+}
+
+.alert {
+  color: #e53e3e;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.savePassword {
+  padding: 12px 20px;
+  font-size: 1rem;
+  background-color: #6366f1;
+  color: #ffffff;
+  font-weight: 600;
+  text-align: center;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.savePassword:hover {
+  background-color: #4f46e5;
+}
+.savePassword:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  color: #e2e8f0;
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #2c3e50;
+}
+
+thead th {
+  background-color: #2c3e50;
+  font-weight: 600;
+}
+
+tbody tr:hover {
+  background-color: #2c3e50;
+  opacity: 0.6;
+}
+
+.delete-btn {
+  background-color: #e53e3e;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+tbody tr:hover .delete-btn:hover {
+  background-color: #c53030;
+}
+
+.copy-btn {
+  background: none;
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+.copy-btn svg {
+  transition: stroke 0.3s ease;
+}
+.copy-btn:hover {
+  background-color: #2c3e50;
+}
+.copy-btn:active {
+  transform: scale(0.95);
+}
+
+.cell-content{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
