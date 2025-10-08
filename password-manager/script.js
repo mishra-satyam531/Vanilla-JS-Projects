@@ -1,3 +1,57 @@
+const numberInput = document.getElementById("length");
+numberInput.addEventListener("keydown", (e) => {
+  if(e.key == 'e' || e.key == '+' || e.key == '-') {
+    e.preventDefault();
+  }
+})
+
+numberInput.addEventListener("input", (e) => {
+  const value = parseInt(e.target.value, 10);
+
+  if(value > 20) {
+    e.target.value = 20;
+  }
+
+  if(value < 1 && e.target.value != "") {
+    e.target.value = 1;
+  }
+})
+
+const upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";
+const numberChars = "0123456789";
+const symbolChars = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+const allChars = upperCaseChars + lowerCaseChars + numberChars + symbolChars;
+
+const passwordGenerate = document.querySelector(".generate-btn");
+const newPassword = document.querySelector(".new-password");
+passwordGenerate.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  let yourPassword = "";
+  for (let i = 0; i < numberInput.value; i++) {
+    yourPassword += allChars[Math.floor((Math.random() * 88))];
+  }
+  console.log(yourPassword);
+
+  newPassword.innerHTML = `
+  <div class="password-to-copy">${yourPassword}</div>
+  <button class="copy-password"><img src="img/clipboard.svg" alt="Copy Password"></button>
+  `;
+})
+
+newPassword.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const textToCopy = newPassword.querySelector(".password-to-copy").innerText;
+  navigator.clipboard.writeText(textToCopy).then(() => {
+    console.log("Password copied successfully");
+  }).catch(err => {
+    console.log("Failed to copy password");
+  })
+})
+
 const savePasswordBtn = document.querySelector(".savePassword");
 const websiteInput = document.getElementById("website");
 const usernameInput = document.getElementById("username");
@@ -81,7 +135,7 @@ savePasswordBtn.addEventListener("click", (e) => {
   document.querySelector(".webAlert").innerHTML = "";
   document.querySelector(".userAlert").innerHTML = "";
   document.querySelector(".passAlert").innerHTML = "";
-  // Get existing passwords from localStorage
+  
   let passwordsArray;
 
   let passwords = localStorage.getItem("passwords");
@@ -91,25 +145,20 @@ savePasswordBtn.addEventListener("click", (e) => {
     passwordsArray = JSON.parse(passwords);
   }
 
-  // Create a new password object
   const newPassword = {
     website: website,
     username: username,
     password: password,
   };
 
-  // Add the new password to the array
   passwordsArray.push(newPassword);
 
-  // Save the updated array back to localStorage
   localStorage.setItem("passwords", JSON.stringify(passwordsArray));
 
-  // Clear the input fields
   websiteInput.value = "";
   usernameInput.value = "";
   passwordInput.value = "";
 
-  // Update the display
   showPasswords();
 });
 

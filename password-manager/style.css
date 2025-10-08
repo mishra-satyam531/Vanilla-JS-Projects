@@ -16,6 +16,7 @@ nav {
   color: #e0e0e0;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 10px 8px;
   font-size: 24px;
 }
@@ -28,6 +29,11 @@ nav .navLinks {
   font-size: 18px;
   display: flex;
   gap: 15px;
+}
+
+nav .logo {
+  display: flex;
+  align-items: center;
 }
 
 main {
@@ -45,6 +51,66 @@ main {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.generate-password {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.generate-btn {
+  padding: 12px 24px;
+  font-size: 1rem;
+  
+  background-color: #6366f1;
+  color: #FFFFFF;
+  
+  font-weight: 600;
+  text-align: center;
+  
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  
+  transition: background-color 0.3s ease;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #e2e8f0;
+}
+
+.form-group input[type="number"] {
+  width: 10%;
+  padding: 12px 15px;
+  font-size: 1rem;
+  
+  background-color: #2c3e50;
+  color: #e2e8f0;
+  
+  border: 2px solid #4a5568;
+  border-radius: 6px;
+  
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input[type="number"]:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+.generate-btn:hover {
+  background-color: #4f46e5;
+}
+
+.new-password {
+  font-size: 20px;
+  color: #3B82F6;
+  display: flex;
 }
 
 form {
@@ -142,7 +208,7 @@ tbody tr:hover .delete-btn:hover {
   background-color: #c53030;
 }
 
-.copy-btn {
+.copy-btn, .copy-password {
   background: none;
   border: none;
   padding: 5px;
@@ -152,13 +218,13 @@ tbody tr:hover .delete-btn:hover {
   align-items: center;
   transition: background-color 0.3s ease;
 }
-.copy-btn svg {
+.copy-btn svg, .copy-password svg {
   transition: stroke 0.3s ease;
 }
-.copy-btn:hover {
+.copy-btn:hover, .copy-password:hover {
   background-color: #2c3e50;
 }
-.copy-btn:active {
+.copy-btn:active, .copy-password:active {
   transform: scale(0.95);
 }
 
