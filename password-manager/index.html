@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CodeLock - Lock Down Your Digital Life</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image" href="img/logo.svg" />
   </head>
   <body>
     <nav>
       <div class="logo">
-        <div class="logoDesign"><img src="img/logo.svg" alt="logo"></div>
+        <div class="logoDesign"><img src="img/logo.svg" alt="logo" /></div>
         <span>CodeLock</span>
       </div>
       <div class="navLinks">
@@ -19,14 +20,20 @@
         <a href="#">About</a>
         <a href="#">Contact</a>
       </div>
+      <button class="hamburger">
+        <img src="img/hamburgerMenu.svg" alt="menu" />
+      </button>
     </nav>
     <main>
       <div class="welcome">
         <h1>Password Manager</h1>
-        <p>
+        <p class="welcome-text-desktop">
           Tired of juggling dozens of passwords? Take control of your digital
           life. We provide a simple, secure place for every password, so you
           never have to hit 'Forgot Password' again.
+        </p>
+        <p class="welcome-text-mobile">
+          A simple, secure place for every password.
         </p>
       </div>
       <h2>Generate Password</h2>
@@ -35,17 +42,23 @@
         <div class="new-password"></div>
       </div>
       <div class="properties">
-        <form>
+        <form id="length-form">
           <div class="form-group">
-            <label for="length">Enter the length of password:</label>
-          <input 
-            type="number"
-            id="length"
-            name="password-length"
-            min="6" max="20"
-            value="12"
-            required
-          />
+            <label for="length" class="welcome-text-desktop"
+              >Enter the length of password:</label
+            >
+            <label for="length" class="welcome-text-mobile"
+              >Enter the length:</label
+            >
+            <input
+              type="number"
+              id="length"
+              name="password-length"
+              min="6"
+              max="20"
+              value="12"
+              required
+            />
           </div>
         </form>
       </div>
@@ -101,8 +114,7 @@
                 <th>Delete</th>
               </tr>
             </thead>
-            <tbody id="password-table-body">
-            </tbody>
+            <tbody id="password-table-body"></tbody>
           </table>
         </div>
       </div>

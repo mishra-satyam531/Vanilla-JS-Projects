@@ -1,3 +1,20 @@
+function showCopiedFeedback(copyButton) {
+  const originalHTML = copyButton.innerHTML;
+  copyButton.classList.add('copied');
+  copyButton.innerHTML = `<img src="img/checkmark.svg" alt="Copied!">`;
+  setTimeout(() => {
+    copyButton.classList.remove('copied');
+    copyButton.innerHTML = originalHTML;
+  }, 1500);
+}
+
+const hamburger = document.querySelector(".hamburger");
+const navLinks = document.querySelector(".navLinks");
+
+hamburger.addEventListener("click", () => {
+  navLinks.classList.toggle("active");
+});
+
 const numberInput = document.getElementById("length");
 numberInput.addEventListener("keydown", (e) => {
   if(e.key == 'e' || e.key == '+' || e.key == '-') {
@@ -15,6 +32,11 @@ numberInput.addEventListener("input", (e) => {
   if(value < 1 && e.target.value != "") {
     e.target.value = 1;
   }
+})
+
+const lengthForm = document.getElementById("length-form");
+lengthForm.addEventListener("submit", (e) => {
+  e.preventDefault();
 })
 
 const upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -43,10 +65,12 @@ passwordGenerate.addEventListener("click", (e) => {
 
 newPassword.addEventListener("click", (e) => {
   e.preventDefault();
+  const copyButton = e.target.closest(".copy-password");
 
   const textToCopy = newPassword.querySelector(".password-to-copy").innerText;
   navigator.clipboard.writeText(textToCopy).then(() => {
     console.log("Password copied successfully");
+    showCopiedFeedback(copyButton);
   }).catch(err => {
     console.log("Failed to copy password");
   })
@@ -192,10 +216,8 @@ tableBody.addEventListener("click", (e) => {
     navigator.clipboard.writeText(typeToCopy).then(() => {
       console.log("Password copied to clipboard!");
 
-      // copyButton.classList.add('copied');
-      //       setTimeout(() => {
-      //           copyButton.classList.remove('copied');
-      //       }, 1500);
+      // to indicate text is copied
+      showCopiedFeedback(copyButton); 
     }).catch(err => {
       console.log("Failed to copy text");
     });
