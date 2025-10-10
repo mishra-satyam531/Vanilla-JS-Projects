@@ -259,6 +259,21 @@ tbody tr:hover .delete-btn:hover {
   gap: 10px;
 }
 
+.toggle-visibility-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+.toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
 @media (max-width: 810px) {
   .add input {
     width: 200px;
@@ -296,6 +311,9 @@ tbody tr:hover .delete-btn:hover {
   }
   .welcome-text-mobile {
     display: block;
+  }
+  .welcome h1 {
+    font-size: 26px;
   }
 }
 @media (max-width: 600px) {

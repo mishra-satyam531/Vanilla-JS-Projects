@@ -33,6 +33,24 @@ numberInput.addEventListener("input", (e) => {
     e.target.value = 1;
   }
 })
+// Add this to your script.js
+const togglePasswordBtn = document.getElementById('togglePassword');
+// The 'passwordInput' variable is already defined in your code
+
+togglePasswordBtn.addEventListener('click', () => {
+  const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+  passwordInput.setAttribute('type', type);
+
+  // Change the icon
+  const icon = togglePasswordBtn.querySelector('img');
+  if (type === 'password') {
+    icon.src = 'img/eye-open.svg';
+    icon.alt = 'Show password';
+  } else {
+    icon.src = 'img/eye-close.svg';
+    icon.alt = 'Hide password';
+  }
+});
 
 const lengthForm = document.getElementById("length-form");
 lengthForm.addEventListener("submit", (e) => {
@@ -116,10 +134,15 @@ function showPasswords() {
   </td>
   <td>
     <div class="cell-content">
-    <span>${"•".repeat(item.password.length)}</span>
+    <span class="password-text" data-password="${item.password}">
+    ${"•".repeat(item.password.length)}
+    </span>
     <button class="copy-btn" data-type="password">
       <img src="img/clipboard.svg" alt="copy">
     </button>
+    <button class="toggle-visibility-btn">
+        <img src="img/eye-open.svg" alt="Show password">
+      </button>
     </div>
   </td>
   <td>
@@ -222,4 +245,20 @@ tableBody.addEventListener("click", (e) => {
       console.log("Failed to copy text");
     });
   }
+
+  const toggleBtn = e.target.closest(".toggle-visibility-btn");
+if (toggleBtn) {
+  const passwordSpan = toggleBtn.parentElement.querySelector('.password-text');
+  const icon = toggleBtn.querySelector('img');
+  
+  if (passwordSpan.innerText.includes("•")) {
+    passwordSpan.innerText = passwordSpan.dataset.password;
+    icon.src = 'img/eye-close.svg';
+    icon.alt = 'Hide password';
+  } else {
+    passwordSpan.innerText = "•".repeat(passwordSpan.dataset.password.length);
+    icon.src = 'img/eye-open.svg';
+    icon.alt = 'Show password';
+  }
+}
 });
