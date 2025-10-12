@@ -38,8 +38,9 @@
       </div>
       <h2>Generate Password</h2>
       <div class="generate-password">
-        <button class="generate-btn">Click to Generate password</button>
+        <button class="generate-btn">Click to Generate Password</button>
         <div class="new-password"></div>
+        <button class="add-password-btn hidden">Add Password</button>
       </div>
       <div class="properties">
         <form id="length-form">
@@ -96,9 +97,9 @@
             placeholder="••••••••••••"
             required
           />
-          <button type="button" class="toggle-btn" id="togglePassword">
-      <img src="img/eye-open.svg" alt="Show password">
-    </button>
+          <button type="button" class="toggle-btn hidden" id="togglePassword">
+            <img src="img/eye-open.svg" alt="Show password" />
+          </button>
           <div class="passAlert alert"></div>
         </div>
         <div>
@@ -114,7 +115,7 @@
                 <th>Website</th>
                 <th>Username</th>
                 <th>Password</th>
-                <th>Delete</th>
+                <th class="actions">Actions</th>
               </tr>
             </thead>
             <tbody id="password-table-body"></tbody>

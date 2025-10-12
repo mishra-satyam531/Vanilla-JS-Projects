@@ -1,9 +1,9 @@
 function showCopiedFeedback(copyButton) {
   const originalHTML = copyButton.innerHTML;
-  copyButton.classList.add('copied');
+  copyButton.classList.add("copied");
   copyButton.innerHTML = `<img src="img/checkmark.svg" alt="Copied!">`;
   setTimeout(() => {
-    copyButton.classList.remove('copied');
+    copyButton.classList.remove("copied");
     copyButton.innerHTML = originalHTML;
   }, 1500);
 }
@@ -17,45 +17,59 @@ hamburger.addEventListener("click", () => {
 
 const numberInput = document.getElementById("length");
 numberInput.addEventListener("keydown", (e) => {
-  if(e.key == 'e' || e.key == '+' || e.key == '-') {
+  if (e.key == "e" || e.key == "+" || e.key == "-") {
     e.preventDefault();
   }
-})
+});
 
 numberInput.addEventListener("input", (e) => {
   const value = parseInt(e.target.value, 10);
 
-  if(value > 20) {
+  if (value > 20) {
     e.target.value = 20;
   }
 
-  if(value < 1 && e.target.value != "") {
+  if (value < 1 && e.target.value != "") {
     e.target.value = 1;
   }
-})
-// Add this to your script.js
-const togglePasswordBtn = document.getElementById('togglePassword');
-// The 'passwordInput' variable is already defined in your code
+});
 
-togglePasswordBtn.addEventListener('click', () => {
-  const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-  passwordInput.setAttribute('type', type);
+const togglePasswordBtn = document.getElementById("togglePassword");
+
+const passwordInput = document.getElementById("password");
+
+function toggleEyeIconVisibility() {
+  if(passwordInput.value.length > 0) {
+    togglePasswordBtn.classList.remove("hidden");
+  } else {
+    togglePasswordBtn.classList.add("hidden");
+  }
+}
+
+passwordInput.addEventListener("input", () => {
+  toggleEyeIconVisibility();
+});
+
+togglePasswordBtn.addEventListener("click", () => {
+  const type =
+    passwordInput.getAttribute("type") === "password" ? "text" : "password";
+  passwordInput.setAttribute("type", type);
 
   // Change the icon
-  const icon = togglePasswordBtn.querySelector('img');
-  if (type === 'password') {
-    icon.src = 'img/eye-open.svg';
-    icon.alt = 'Show password';
+  const icon = togglePasswordBtn.querySelector("img");
+  if (type === "password") {
+    icon.src = "img/eye-open.svg";
+    icon.alt = "Show password";
   } else {
-    icon.src = 'img/eye-close.svg';
-    icon.alt = 'Hide password';
+    icon.src = "img/eye-close.svg";
+    icon.alt = "Hide password";
   }
 });
 
 const lengthForm = document.getElementById("length-form");
 lengthForm.addEventListener("submit", (e) => {
   e.preventDefault();
-})
+});
 
 const upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";
@@ -69,9 +83,11 @@ const newPassword = document.querySelector(".new-password");
 passwordGenerate.addEventListener("click", (e) => {
   e.preventDefault();
 
+  addPasswordBtn.classList.remove("hidden");
+  
   let yourPassword = "";
   for (let i = 0; i < numberInput.value; i++) {
-    yourPassword += allChars[Math.floor((Math.random() * 88))];
+    yourPassword += allChars[Math.floor(Math.random() * 88)];
   }
   console.log(yourPassword);
 
@@ -79,6 +95,17 @@ passwordGenerate.addEventListener("click", (e) => {
   <div class="password-to-copy">${yourPassword}</div>
   <button class="copy-password"><img src="img/clipboard.svg" alt="Copy Password"></button>
   `;
+});
+
+const addPasswordBtn = document.querySelector(".add-password-btn");
+addPasswordBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const generatedPasswordEl = newPassword.querySelector(".password-to-copy");
+  if(generatedPasswordEl) {
+    const generatedPassword = generatedPasswordEl.innerText;
+    passwordInput.value = generatedPassword;
+  }
 })
 
 newPassword.addEventListener("click", (e) => {
@@ -86,18 +113,20 @@ newPassword.addEventListener("click", (e) => {
   const copyButton = e.target.closest(".copy-password");
 
   const textToCopy = newPassword.querySelector(".password-to-copy").innerText;
-  navigator.clipboard.writeText(textToCopy).then(() => {
-    console.log("Password copied successfully");
-    showCopiedFeedback(copyButton);
-  }).catch(err => {
-    console.log("Failed to copy password");
-  })
-})
+  navigator.clipboard
+    .writeText(textToCopy)
+    .then(() => {
+      console.log("Password copied successfully");
+      showCopiedFeedback(copyButton);
+    })
+    .catch((err) => {
+      console.log("Failed to copy password");
+    });
+});
 
 const savePasswordBtn = document.querySelector(".savePassword");
 const websiteInput = document.getElementById("website");
 const usernameInput = document.getElementById("username");
-const passwordInput = document.getElementById("password");
 const tableBody = document.getElementById("password-table-body");
 
 function showPasswords() {
@@ -147,6 +176,7 @@ function showPasswords() {
   </td>
   <td>
     <button class="delete-btn" data-index="${index}">Delete</button>
+    <button class="edit-btn" data-index="${index}">Edit</button>
   </td>
 `;
     tableBody.appendChild(newRow);
@@ -182,7 +212,7 @@ savePasswordBtn.addEventListener("click", (e) => {
   document.querySelector(".webAlert").innerHTML = "";
   document.querySelector(".userAlert").innerHTML = "";
   document.querySelector(".passAlert").innerHTML = "";
-  
+
   let passwordsArray;
 
   let passwords = localStorage.getItem("passwords");
@@ -224,6 +254,55 @@ tableBody.addEventListener("click", (e) => {
     showPasswords();
   }
 
+  if (e.target.classList.contains("edit-btn")) {
+    const allEditButtons = document.querySelectorAll(".edit-btn");
+    allEditButtons.forEach((button) => {
+      button.disabled = true;
+    });
+
+    const index = e.target.getAttribute("data-index");
+
+    let passwords = localStorage.getItem("passwords");
+    let passwordsArray = JSON.parse(passwords);
+    const itemToEdit = passwordsArray[index];
+
+    const row = e.target.closest("tr");
+
+    row.innerHTML = `
+    <td><input type="text" class="edit-input" value="${itemToEdit.website}"></td>
+    <td><input type="text" class="edit-input" value="${itemToEdit.username}"></td>
+    <td><input type="text" class="edit-input" value="${itemToEdit.password}"></td>
+    <td>
+      <button class="save-edit-btn" data-index="${index}">Save</button>
+      <button class="cancel-edit-btn">Cancel</button>
+    </td>
+  `;
+  }
+
+  if (e.target.classList.contains("save-edit-btn")) {
+    const index = e.target.getAttribute("data-index");
+    const row = e.target.closest("tr");
+    const inputs = row.querySelectorAll(".edit-input");
+
+    let passwords = localStorage.getItem("passwords");
+    let passwordsArray = JSON.parse(passwords);
+
+    // Update data in array
+    passwordsArray[index] = {
+      website: inputs[0].value,
+      username: inputs[1].value,
+      password: inputs[2].value,
+    };
+
+    localStorage.setItem("passwords", JSON.stringify(passwordsArray));
+
+    showPasswords();
+  }
+
+  if (e.target.classList.contains("cancel-edit-btn")) {
+    showPasswords();
+  }
+
   if (e.target.closest(".copy-btn")) {
     const copyButton = e.target.closest(".copy-btn");
     let passwords = localStorage.getItem("passwords");
@@ -236,29 +315,33 @@ tableBody.addEventListener("click", (e) => {
     const textToCopy = copyButton.getAttribute("data-type");
     const typeToCopy = passwordsArray[index][textToCopy];
 
-    navigator.clipboard.writeText(typeToCopy).then(() => {
-      console.log("Password copied to clipboard!");
+    navigator.clipboard
+      .writeText(typeToCopy)
+      .then(() => {
+        console.log("Password copied to clipboard!");
 
-      // to indicate text is copied
-      showCopiedFeedback(copyButton); 
-    }).catch(err => {
-      console.log("Failed to copy text");
-    });
+        // to indicate text is copied
+        showCopiedFeedback(copyButton);
+      })
+      .catch((err) => {
+        console.log("Failed to copy text");
+      });
   }
 
   const toggleBtn = e.target.closest(".toggle-visibility-btn");
-if (toggleBtn) {
-  const passwordSpan = toggleBtn.parentElement.querySelector('.password-text');
-  const icon = toggleBtn.querySelector('img');
-  
-  if (passwordSpan.innerText.includes("•")) {
-    passwordSpan.innerText = passwordSpan.dataset.password;
-    icon.src = 'img/eye-close.svg';
-    icon.alt = 'Hide password';
-  } else {
-    passwordSpan.innerText = "•".repeat(passwordSpan.dataset.password.length);
-    icon.src = 'img/eye-open.svg';
-    icon.alt = 'Show password';
+  if (toggleBtn) {
+    const passwordSpan =
+      toggleBtn.parentElement.querySelector(".password-text");
+    const icon = toggleBtn.querySelector("img");
+
+    if (passwordSpan.innerText.includes("•")) {
+      passwordSpan.innerText = passwordSpan.dataset.password;
+      icon.src = "img/eye-close.svg";
+      icon.alt = "Hide password";
+    } else {
+      passwordSpan.innerText = "•".repeat(passwordSpan.dataset.password.length);
+      icon.src = "img/eye-open.svg";
+      icon.alt = "Show password";
+    }
   }
-}
 });
