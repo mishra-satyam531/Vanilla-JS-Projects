@@ -86,8 +86,8 @@ main {
 .add-password-btn {
   padding: 12px 24px;
   font-size: 1rem;
-  background-color: #10B981;
-  color: #FFFFFF;
+  background-color: #10b981;
+  color: #ffffff;
   font-weight: 600;
   border: none;
   border-radius: 6px;
@@ -312,6 +312,41 @@ tbody tr:hover .delete-btn:hover {
   padding: 5px;
 }
 
+/* Styling for the new Save and Cancel buttons */
+.save-edit-btn,
+.cancel-edit-btn {
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.save-edit-btn {
+  background-color: #10b981; /* Green */
+}
+.save-edit-btn:hover {
+  background-color: #059669;
+}
+
+.cancel-edit-btn {
+  background-color: #64748b; /* Gray */
+}
+.cancel-edit-btn:hover {
+  background-color: #475569;
+}
+
+/* Styling for the input fields in the table */
+.edit-input {
+  width: 100%;
+  padding: 6px 8px;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #4a5568;
+  border-radius: 4px;
+}
+
 @media (max-width: 810px) {
   .add input {
     width: 200px;
@@ -360,37 +395,8 @@ tbody tr:hover .delete-btn:hover {
     padding: 8px 12px;
     font-size: 1rem;
   }
-}
-/* Styling for the new Save and Cancel buttons */
-.save-edit-btn, .cancel-edit-btn {
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.save-edit-btn {
-  background-color: #10B981; /* Green */
-}
-.save-edit-btn:hover {
-  background-color: #059669;
-}
-
-.cancel-edit-btn {
-  background-color: #64748b; /* Gray */
-}
-.cancel-edit-btn:hover {
-  background-color: #475569;
-}
-
-/* Styling for the input fields in the table */
-.edit-input {
-  width: 100%;
-  padding: 6px 8px;
-  background-color: #1e1e1e;
-  color: #e0e0e0;
-  border: 1px solid #4a5568;
-  border-radius: 4px;
+  .generate-password {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }

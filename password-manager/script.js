@@ -1,3 +1,17 @@
+const hamburger = document.querySelector(".hamburger");
+const navLinks = document.querySelector(".navLinks");
+const numberInput = document.getElementById("length");
+const togglePasswordBtn = document.getElementById("togglePassword");
+const passwordInput = document.getElementById("password");
+const lengthForm = document.getElementById("length-form");
+const passwordGenerate = document.querySelector(".generate-btn");
+const newPassword = document.querySelector(".new-password");
+const addPasswordBtn = document.querySelector(".add-password-btn");
+const savePasswordBtn = document.querySelector(".savePassword");
+const websiteInput = document.getElementById("website");
+const usernameInput = document.getElementById("username");
+const tableBody = document.getElementById("password-table-body");
+
 function showCopiedFeedback(copyButton) {
   const originalHTML = copyButton.innerHTML;
   copyButton.classList.add("copied");
@@ -8,36 +22,6 @@ function showCopiedFeedback(copyButton) {
   }, 1500);
 }
 
-const hamburger = document.querySelector(".hamburger");
-const navLinks = document.querySelector(".navLinks");
-
-hamburger.addEventListener("click", () => {
-  navLinks.classList.toggle("active");
-});
-
-const numberInput = document.getElementById("length");
-numberInput.addEventListener("keydown", (e) => {
-  if (e.key == "e" || e.key == "+" || e.key == "-") {
-    e.preventDefault();
-  }
-});
-
-numberInput.addEventListener("input", (e) => {
-  const value = parseInt(e.target.value, 10);
-
-  if (value > 20) {
-    e.target.value = 20;
-  }
-
-  if (value < 1 && e.target.value != "") {
-    e.target.value = 1;
-  }
-});
-
-const togglePasswordBtn = document.getElementById("togglePassword");
-
-const passwordInput = document.getElementById("password");
-
 function toggleEyeIconVisibility() {
   if(passwordInput.value.length > 0) {
     togglePasswordBtn.classList.remove("hidden");
@@ -45,89 +29,6 @@ function toggleEyeIconVisibility() {
     togglePasswordBtn.classList.add("hidden");
   }
 }
-
-passwordInput.addEventListener("input", () => {
-  toggleEyeIconVisibility();
-});
-
-togglePasswordBtn.addEventListener("click", () => {
-  const type =
-    passwordInput.getAttribute("type") === "password" ? "text" : "password";
-  passwordInput.setAttribute("type", type);
-
-  // Change the icon
-  const icon = togglePasswordBtn.querySelector("img");
-  if (type === "password") {
-    icon.src = "img/eye-open.svg";
-    icon.alt = "Show password";
-  } else {
-    icon.src = "img/eye-close.svg";
-    icon.alt = "Hide password";
-  }
-});
-
-const lengthForm = document.getElementById("length-form");
-lengthForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-});
-
-const upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";
-const numberChars = "0123456789";
-const symbolChars = "!@#$%^&*()_+-=[]{}|;:,.<>?";
-
-const allChars = upperCaseChars + lowerCaseChars + numberChars + symbolChars;
-
-const passwordGenerate = document.querySelector(".generate-btn");
-const newPassword = document.querySelector(".new-password");
-passwordGenerate.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  addPasswordBtn.classList.remove("hidden");
-  
-  let yourPassword = "";
-  for (let i = 0; i < numberInput.value; i++) {
-    yourPassword += allChars[Math.floor(Math.random() * 88)];
-  }
-  console.log(yourPassword);
-
-  newPassword.innerHTML = `
-  <div class="password-to-copy">${yourPassword}</div>
-  <button class="copy-password"><img src="img/clipboard.svg" alt="Copy Password"></button>
-  `;
-});
-
-const addPasswordBtn = document.querySelector(".add-password-btn");
-addPasswordBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  const generatedPasswordEl = newPassword.querySelector(".password-to-copy");
-  if(generatedPasswordEl) {
-    const generatedPassword = generatedPasswordEl.innerText;
-    passwordInput.value = generatedPassword;
-  }
-})
-
-newPassword.addEventListener("click", (e) => {
-  e.preventDefault();
-  const copyButton = e.target.closest(".copy-password");
-
-  const textToCopy = newPassword.querySelector(".password-to-copy").innerText;
-  navigator.clipboard
-    .writeText(textToCopy)
-    .then(() => {
-      console.log("Password copied successfully");
-      showCopiedFeedback(copyButton);
-    })
-    .catch((err) => {
-      console.log("Failed to copy password");
-    });
-});
-
-const savePasswordBtn = document.querySelector(".savePassword");
-const websiteInput = document.getElementById("website");
-const usernameInput = document.getElementById("username");
-const tableBody = document.getElementById("password-table-body");
 
 function showPasswords() {
   // Check if there are passwords in localStorage
@@ -182,8 +83,111 @@ function showPasswords() {
     tableBody.appendChild(newRow);
   });
 }
-
 showPasswords();
+
+hamburger.addEventListener("click", () => {
+  navLinks.classList.toggle("active");
+});
+
+numberInput.addEventListener("keydown", (e) => {
+  if (e.key == "e" || e.key == "+" || e.key == "-") {
+    e.preventDefault();
+  }
+});
+
+numberInput.addEventListener("input", (e) => {
+  const value = parseInt(e.target.value, 10);
+
+  if (value > 20) {
+    e.target.value = 20;
+  }
+
+  if (value < 1 && e.target.value != "") {
+    e.target.value = 1;
+  }
+});
+
+togglePasswordBtn.addEventListener("click", () => {
+  const type =
+    passwordInput.getAttribute("type") === "password" ? "text" : "password";
+  passwordInput.setAttribute("type", type);
+
+  // Change the icon
+  const icon = togglePasswordBtn.querySelector("img");
+  if (type === "password") {
+    icon.src = "img/eye-open.svg";
+    icon.alt = "Show password";
+  } else {
+    icon.src = "img/eye-close.svg";
+    icon.alt = "Hide password";
+  }
+});
+
+lengthForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+});
+
+const upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";
+const numberChars = "0123456789";
+const symbolChars = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+const allChars = upperCaseChars + lowerCaseChars + numberChars + symbolChars;
+
+passwordGenerate.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  addPasswordBtn.classList.remove("hidden");
+  
+  let yourPassword = "";
+  const passwordLength = numberInput.value;
+  const characterSetLength = allChars.length;
+
+  // 1. Create an array to hold secure random numbers
+  const randomValues = new Uint32Array(passwordLength);
+
+  // 2. Fill the array with cryptographically secure numbers
+  window.crypto.getRandomValues(randomValues);
+
+  // 3. Loop and build the password
+  for (let i = 0; i < passwordLength; i++) {
+    // Use the secure number to pick a character
+    yourPassword += allChars[randomValues[i] % characterSetLength];
+  }
+
+  newPassword.innerHTML = `
+  <div class="password-to-copy">${yourPassword}</div>
+  <button class="copy-password"><img src="img/clipboard.svg" alt="Copy Password"></button>
+  `;
+});
+
+addPasswordBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const generatedPasswordEl = newPassword.querySelector(".password-to-copy");
+  if(generatedPasswordEl) {
+    const generatedPassword = generatedPasswordEl.innerText;
+    passwordInput.value = generatedPassword;
+
+    toggleEyeIconVisibility(); 
+  }
+})
+
+newPassword.addEventListener("click", (e) => {
+  e.preventDefault();
+  const copyButton = e.target.closest(".copy-password");
+
+  const textToCopy = newPassword.querySelector(".password-to-copy").innerText;
+  navigator.clipboard
+    .writeText(textToCopy)
+    .then(() => {
+      console.log("Password copied successfully");
+      showCopiedFeedback(copyButton);
+    })
+    .catch((err) => {
+      console.log("Failed to copy password");
+    });
+});
 
 savePasswordBtn.addEventListener("click", (e) => {
   e.preventDefault();
