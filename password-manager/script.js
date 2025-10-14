@@ -23,7 +23,7 @@ function showCopiedFeedback(copyButton) {
 }
 
 function toggleEyeIconVisibility() {
-  if(passwordInput.value.length > 0) {
+  if (passwordInput.value.length > 0) {
     togglePasswordBtn.classList.remove("hidden");
   } else {
     togglePasswordBtn.classList.add("hidden");
@@ -64,7 +64,7 @@ function showPasswords() {
   </td>
   <td>
     <div class="cell-content">
-    <span class="password-text" data-password="${item.password}">
+    <span class="password-text" data-password="${item.password}" data-visible="false">
     ${"•".repeat(item.password.length)}
     </span>
     <button class="copy-btn" data-type="password">
@@ -87,6 +87,10 @@ showPasswords();
 
 hamburger.addEventListener("click", () => {
   navLinks.classList.toggle("active");
+});
+
+lengthForm.addEventListener("submit", (e) => {
+  e.preventDefault();
 });
 
 numberInput.addEventListener("keydown", (e) => {
@@ -123,10 +127,6 @@ togglePasswordBtn.addEventListener("click", () => {
   }
 });
 
-lengthForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-});
-
 const upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";
 const numberChars = "0123456789";
@@ -137,23 +137,23 @@ const allChars = upperCaseChars + lowerCaseChars + numberChars + symbolChars;
 passwordGenerate.addEventListener("click", (e) => {
   e.preventDefault();
 
-  addPasswordBtn.classList.remove("hidden");
-  
   let yourPassword = "";
   const passwordLength = numberInput.value;
   const characterSetLength = allChars.length;
 
-  // 1. Create an array to hold secure random numbers
+  // Create an array to hold secure random numbers
   const randomValues = new Uint32Array(passwordLength);
 
-  // 2. Fill the array with cryptographically secure numbers
+  // Fill the array with cryptographically secure numbers
   window.crypto.getRandomValues(randomValues);
 
-  // 3. Loop and build the password
+  // Loop and build the password
   for (let i = 0; i < passwordLength; i++) {
     // Use the secure number to pick a character
     yourPassword += allChars[randomValues[i] % characterSetLength];
   }
+
+  addPasswordBtn.classList.remove("hidden");
 
   newPassword.innerHTML = `
   <div class="password-to-copy">${yourPassword}</div>
@@ -165,16 +165,15 @@ addPasswordBtn.addEventListener("click", (e) => {
   e.preventDefault();
 
   const generatedPasswordEl = newPassword.querySelector(".password-to-copy");
-  if(generatedPasswordEl) {
+  if (generatedPasswordEl) {
     const generatedPassword = generatedPasswordEl.innerText;
     passwordInput.value = generatedPassword;
 
-    toggleEyeIconVisibility(); 
+    toggleEyeIconVisibility();
   }
-})
+});
 
 newPassword.addEventListener("click", (e) => {
-  e.preventDefault();
   const copyButton = e.target.closest(".copy-password");
 
   const textToCopy = newPassword.querySelector(".password-to-copy").innerText;
@@ -324,7 +323,6 @@ tableBody.addEventListener("click", (e) => {
       .then(() => {
         console.log("Password copied to clipboard!");
 
-        // to indicate text is copied
         showCopiedFeedback(copyButton);
       })
       .catch((err) => {
@@ -332,20 +330,21 @@ tableBody.addEventListener("click", (e) => {
       });
   }
 
-  const toggleBtn = e.target.closest(".toggle-visibility-btn");
-  if (toggleBtn) {
-    const passwordSpan =
-      toggleBtn.parentElement.querySelector(".password-text");
-    const icon = toggleBtn.querySelector("img");
+const toggleBtn = e.target.closest(".toggle-visibility-btn");
+if (toggleBtn) {
+  const passwordSpan = toggleBtn.parentElement.querySelector('.password-text');
+  const icon = toggleBtn.querySelector('img');
+  
+  const isVisible = passwordSpan.dataset.visible === 'true';
 
-    if (passwordSpan.innerText.includes("•")) {
-      passwordSpan.innerText = passwordSpan.dataset.password;
-      icon.src = "img/eye-close.svg";
-      icon.alt = "Hide password";
-    } else {
-      passwordSpan.innerText = "•".repeat(passwordSpan.dataset.password.length);
-      icon.src = "img/eye-open.svg";
-      icon.alt = "Show password";
-    }
+  if (!isVisible) {
+    passwordSpan.innerText = passwordSpan.dataset.password;
+    icon.src = "img/eye-close.svg";
+    passwordSpan.dataset.visible = 'true'; // Update the state
+  } else {
+    passwordSpan.innerText = "•".repeat(passwordSpan.dataset.password.length);
+    icon.src = "img/eye-open.svg";
+    passwordSpan.dataset.visible = 'false'; // Update the state
   }
+}
 });
