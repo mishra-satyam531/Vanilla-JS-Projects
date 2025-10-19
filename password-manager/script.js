@@ -1,3 +1,12 @@
+const lockScreen = document.getElementById('lock-screen');
+const appContent = document.getElementById('app-content');
+const toggleMasterPasswordBtn = document.getElementById('toggleMasterPassword');
+const masterPasswordInput = document.getElementById('master-password');
+const unlockBtn = document.getElementById('unlock-btn');
+const lockError = document.getElementById('lock-error');
+let activeMasterPassword = ''; // This will hold the password after unlock
+let decryptedPasswords = []; // This will hold the decrypted array
+
 const hamburger = document.querySelector(".hamburger");
 const navLinks = document.querySelector(".navLinks");
 const numberInput = document.getElementById("length");
@@ -31,19 +40,11 @@ function toggleEyeIconVisibility() {
 }
 
 function showPasswords() {
-  // Check if there are passwords in localStorage
-  let passwords = localStorage.getItem("passwords");
-  if (passwords == null) {
-    passwordsArray = [];
-  } else {
-    passwordsArray = JSON.parse(passwords);
-  }
-
   // Clear the current table
   tableBody.innerHTML = "";
 
   // Loop through the passwords and display them
-  passwordsArray.forEach((item, index) => {
+  decryptedPasswords.forEach((item, index) => {
     const newRow = document.createElement("tr");
     newRow.innerHTML = `
   <td>
@@ -216,24 +217,20 @@ savePasswordBtn.addEventListener("click", (e) => {
   document.querySelector(".userAlert").innerHTML = "";
   document.querySelector(".passAlert").innerHTML = "";
 
-  let passwordsArray;
-
-  let passwords = localStorage.getItem("passwords");
-  if (passwords == null) {
-    passwordsArray = [];
-  } else {
-    passwordsArray = JSON.parse(passwords);
-  }
-
   const newPassword = {
     website: website,
     username: username,
     password: password,
   };
 
-  passwordsArray.push(newPassword);
+  decryptedPasswords.push(newPassword);
 
-  localStorage.setItem("passwords", JSON.stringify(passwordsArray));
+  const encryptedData = CryptoJS.AES.encrypt(
+    JSON.stringify(decryptedPasswords),
+    activeMasterPassword
+  ).toString();
+
+  localStorage.setItem("passwords", encryptedData);
 
   websiteInput.value = "";
   usernameInput.value = "";
@@ -247,12 +244,14 @@ tableBody.addEventListener("click", (e) => {
   if (e.target.classList.contains("delete-btn")) {
     const index = e.target.getAttribute("data-index");
 
-    let passwords = localStorage.getItem("passwords");
-    let passwordsArray = JSON.parse(passwords);
+    decryptedPasswords.splice(index, 1);
 
-    passwordsArray.splice(index, 1);
+    const encryptedData = CryptoJS.AES.encrypt(
+      JSON.stringify(decryptedPasswords),
+      activeMasterPassword
+    ).toString();
 
-    localStorage.setItem("passwords", JSON.stringify(passwordsArray));
+    localStorage.setItem("passwords", encryptedData);
 
     showPasswords();
   }
@@ -265,9 +264,7 @@ tableBody.addEventListener("click", (e) => {
 
     const index = e.target.getAttribute("data-index");
 
-    let passwords = localStorage.getItem("passwords");
-    let passwordsArray = JSON.parse(passwords);
-    const itemToEdit = passwordsArray[index];
+    const itemToEdit = decryptedPasswords[index];
 
     const row = e.target.closest("tr");
 
@@ -287,17 +284,18 @@ tableBody.addEventListener("click", (e) => {
     const row = e.target.closest("tr");
     const inputs = row.querySelectorAll(".edit-input");
 
-    let passwords = localStorage.getItem("passwords");
-    let passwordsArray = JSON.parse(passwords);
-
-    // Update data in array
-    passwordsArray[index] = {
+    decryptedPasswords[index] = {
       website: inputs[0].value,
       username: inputs[1].value,
       password: inputs[2].value,
     };
 
-    localStorage.setItem("passwords", JSON.stringify(passwordsArray));
+    const encryptedData = CryptoJS.AES.encrypt(
+      JSON.stringify(decryptedPasswords),
+      activeMasterPassword
+    ).toString();
+
+    localStorage.setItem("passwords", encryptedData);
 
     showPasswords();
   }
@@ -309,19 +307,19 @@ tableBody.addEventListener("click", (e) => {
   if (e.target.closest(".copy-btn")) {
     const copyButton = e.target.closest(".copy-btn");
     let passwords = localStorage.getItem("passwords");
-    let passwordsArray = JSON.parse(passwords);
-
     const row = copyButton.closest("tr");
-    const deleteButton = row.querySelector(".delete-btn");
-    const index = deleteButton.getAttribute("data-index");
 
-    const textToCopy = copyButton.getAttribute("data-type");
-    const typeToCopy = passwordsArray[index][textToCopy];
+    const actionButton = row.querySelector(".delete-btn") || row.querySelector(".edit-btn"); 
+    const index = actionButton.getAttribute("data-index");
+
+    const dataType = copyButton.getAttribute("data-type");
+    
+    const textToCopy = decryptedPasswords[index][dataType];
 
     navigator.clipboard
-      .writeText(typeToCopy)
+      .writeText(textToCopy)
       .then(() => {
-        console.log("Password copied to clipboard!");
+        console.log("Text copied to clipboard!");
 
         showCopiedFeedback(copyButton);
       })
@@ -348,3 +346,63 @@ if (toggleBtn) {
   }
 }
 });
+
+toggleMasterPasswordBtn.addEventListener('click', () => {
+  const type = masterPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+  masterPasswordInput.setAttribute('type', type);
+
+  const icon = toggleMasterPasswordBtn.querySelector('img');
+  if (type === 'password') {
+    icon.src = 'img/eye-open.svg';
+    icon.alt = 'Show password';
+  } else {
+    icon.src = 'img/eye-close.svg';
+    icon.alt = 'Hide password';
+  }
+});
+
+unlockBtn.addEventListener("click", () => {
+  console.log("Unlock button clicked.");
+  const passwordAttempt = masterPasswordInput.value;
+  const encryptedData = localStorage.getItem("passwords");
+
+  if (!encryptedData) {
+    // ---- FIRST TIME USER ----
+    activeMasterPassword = passwordAttempt;
+    decryptedPasswords = []; 
+
+    lockScreen.classList.add('hidden');
+    appContent.classList.remove('hidden');
+    showPasswords(); 
+  } else {
+    // ---- EXISTING USER ----
+    try {
+      const bytes = CryptoJS.AES.decrypt(encryptedData, passwordAttempt);
+      const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+
+      if (decryptedData) {
+        // ---- SUCCESSFUL LOGIN ----
+        activeMasterPassword = passwordAttempt;
+        // Check if parsing works
+        try {
+            decryptedPasswords = JSON.parse(decryptedData);
+        } catch (parseError) {
+            lockError.innerText = "Data corrupted. Cannot load passwords.";
+            lockError.classList.remove('hidden');
+            return; // Stop if parsing fails
+        }
+
+        lockScreen.classList.add('hidden');
+        appContent.classList.remove('hidden');
+        showPasswords(); 
+      } else {
+        // ---- FAILED LOGIN (Wrong Password) ----
+        throw new Error("Wrong password - decryption yielded empty data");
+      }
+    } catch (error) {
+      // ---- FAILED LOGIN (Error during decryption or thrown error) ----
+      lockError.innerText = "Wrong password. Please try again.";
+      lockError.classList.remove('hidden');
+    }
+  }
+})

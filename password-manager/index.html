@@ -6,123 +6,145 @@
     <title>CodeLock - Lock Down Your Digital Life</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image" href="img/logo.svg" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   </head>
   <body>
-    <nav>
-      <div class="logo">
-        <div class="logoDesign"><img src="img/logo.svg" alt="logo" /></div>
-        <span>CodeLock</span>
-      </div>
-      <div class="navLinks">
-        <a href="#">Home</a>
-        <a href="#">Features</a>
-        <a href="#">Pricing</a>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-      </div>
-      <button class="hamburger">
-        <img src="img/hamburgerMenu.svg" alt="menu" />
-      </button>
-    </nav>
-    <main>
-      <div class="welcome">
-        <h1>Password Manager</h1>
-        <p class="welcome-text-desktop">
-          Tired of juggling dozens of passwords? Take control of your digital
-          life. We provide a simple, secure place for every password, so you
-          never have to hit 'Forgot Password' again.
-        </p>
-        <p class="welcome-text-mobile">
-          A simple, secure place for every password.
-        </p>
-      </div>
-      <h2>Generate Password</h2>
-      <div class="generate-password">
-        <button class="generate-btn">Click to Generate Password</button>
-        <div class="new-password"></div>
-        <button class="add-password-btn hidden">Add Password</button>
-      </div>
-      <div class="properties">
-        <form id="length-form">
-          <div class="form-group">
-            <label for="length" class="welcome-text-desktop"
-              >Enter the length of password:</label
-            >
-            <label for="length" class="welcome-text-mobile"
-              >Enter the length:</label
-            >
-            <input
-              type="number"
-              id="length"
-              name="password-length"
-              min="6"
-              max="20"
-              value="12"  
-              required
-            />
-          </div>
-        </form>
-      </div>
-      <form class="add">
-        <h2>Add Password</h2>
-        <div>
-          <div class="fill"></div>
-          <label for="website">Website:</label>
-          <input
-            type="text"
-            id="website"
-            name="website"
-            placeholder="e.g., www.example.com"
-            required
-          />
-          <div class="webAlert alert"></div>
-        </div>
-        <div>
-          <label for="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            placeholder="e.g., user@example.com"
-            required
-          />
-          <div class="userAlert alert"></div>
-        </div>
-        <div>
-          <label for="password">Password:</label>
+    <div id="lock-screen">
+      <div class="lock-box">
+        <img src="img/logo.svg" alt="CodeLock Logo" class="lock-logo" />
+        <h2>Enter Master Password</h2>
+        <div class="password-container lock-input-container">
           <input
             type="password"
-            id="password"
-            name="password"
+            id="master-password"
             placeholder="••••••••••••"
-            required
           />
-          <button type="button" class="toggle-btn hidden" id="togglePassword">
+          <button type="button" class="toggle-btn" id="toggleMasterPassword">
             <img src="img/eye-open.svg" alt="Show password" />
           </button>
-          <div class="passAlert alert"></div>
         </div>
-        <div>
-          <button type="submit" class="savePassword">Save Password</button>
-        </div>
-      </form>
-      <div class="store">
-        <h2>Your Passwords</h2>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Website</th>
-                <th>Username</th>
-                <th>Password</th>
-                <th class="actions">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="password-table-body"></tbody>
-          </table>
-        </div>
+        <button id="unlock-btn">Unlock</button>
+        <p id="lock-error" class="alert hidden"></p>
       </div>
-    </main>
+    </div>
+    <div id="app-content" class="hidden">
+      <nav>
+        <div class="logo">
+          <div class="logoDesign"><img src="img/logo.svg" alt="logo" /></div>
+          <span>CodeLock</span>
+        </div>
+        <div class="navLinks">
+          <a href="#">Home</a>
+          <a href="#">Features</a>
+          <a href="#">Pricing</a>
+          <a href="#">About</a>
+          <a href="#">Contact</a>
+        </div>
+        <button class="hamburger">
+          <img src="img/hamburgerMenu.svg" alt="menu" />
+        </button>
+      </nav>
+      <main>
+        <div class="welcome">
+          <h1>Password Manager</h1>
+          <p class="welcome-text-desktop">
+            Tired of juggling dozens of passwords? Take control of your digital
+            life. We provide a simple, secure place for every password, so you
+            never have to hit 'Forgot Password' again.
+          </p>
+          <p class="welcome-text-mobile">
+            A simple, secure place for every password.
+          </p>
+        </div>
+        <h2>Generate Password</h2>
+        <div class="generate-password">
+          <button class="generate-btn">Click to Generate Password</button>
+          <div class="new-password"></div>
+          <button class="add-password-btn hidden">Add Password</button>
+        </div>
+        <div class="properties">
+          <form id="length-form">
+            <div class="form-group">
+              <label for="length" class="welcome-text-desktop"
+                >Enter the length of password:</label
+              >
+              <label for="length" class="welcome-text-mobile"
+                >Enter the length:</label
+              >
+              <input
+                type="number"
+                id="length"
+                name="password-length"
+                min="6"
+                max="20"
+                value="12"
+                required
+              />
+            </div>
+          </form>
+        </div>
+        <form class="add">
+          <h2>Add Password</h2>
+          <div>
+            <div class="fill"></div>
+            <label for="website">Website:</label>
+            <input
+              type="text"
+              id="website"
+              name="website"
+              placeholder="e.g., www.example.com"
+              required
+            />
+            <div class="webAlert alert"></div>
+          </div>
+          <div>
+            <label for="username">Username:</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="e.g., user@example.com"
+              required
+            />
+            <div class="userAlert alert"></div>
+          </div>
+          <div>
+            <label for="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="••••••••••••"
+              required
+            />
+            <button type="button" class="toggle-btn hidden" id="togglePassword">
+              <img src="img/eye-open.svg" alt="Show password" />
+            </button>
+            <div class="passAlert alert"></div>
+          </div>
+          <div>
+            <button type="submit" class="savePassword">Save Password</button>
+          </div>
+        </form>
+        <div class="store">
+          <h2>Your Passwords</h2>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Website</th>
+                  <th>Username</th>
+                  <th>Password</th>
+                  <th class="actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="password-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
 
     <script src="script.js"></script>
   </body>
