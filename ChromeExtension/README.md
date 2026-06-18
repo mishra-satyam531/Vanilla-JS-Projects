@@ -1,4 +1,4 @@
-# Lead Tracker Chrome Extension
+# Banana Lead Tracker Chrome Extension
 
 A simple Chrome Extension to track and save your leads.
 
