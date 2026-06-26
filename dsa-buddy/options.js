@@ -52,10 +52,18 @@ async function loadSettings() {
  * @param {string} message - The message to display
  * @param {string} type - Either "success" or "error"
  */
+let statusTimeout;
+
 function showStatus(message, type = "success") {
   statusEl.textContent = message;
   statusEl.className = type;
-  setTimeout(() => {
+  
+  // Clear any existing timer before starting a new one
+  if (statusTimeout) {
+    clearTimeout(statusTimeout);
+  }
+  
+  statusTimeout = setTimeout(() => {
     statusEl.textContent = "";
     statusEl.className = "";
   }, 3000);

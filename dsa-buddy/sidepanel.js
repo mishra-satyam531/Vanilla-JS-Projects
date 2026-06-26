@@ -52,22 +52,29 @@ function appendMessageToDOM(role, content, { isTyping = false } = {}) {
 
   const bubble = document.createElement("div");
   bubble.className = "message__bubble";
-  bubble.innerHTML = content;
+
+  // Parse content: Markdown for assistant, plain text for user
+  if (role === "assistant" && typeof marked !== "undefined") {
+    // First parse Markdown to HTML
+    bubble.innerHTML = marked.parse(content);
+    // Then render LaTeX math in the HTML
+    if (typeof renderMathInElement !== "undefined") {
+      renderMathInElement(bubble, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+        ],
+      });
+    }
+  } else {
+    // User messages: plain text (no Markdown or LaTeX needed)
+    bubble.textContent = content;
+  }
 
   wrapper.appendChild(roleLabel);
   wrapper.appendChild(bubble);
   chatContainer.appendChild(wrapper);
   chatContainer.scrollTop = chatContainer.scrollHeight;
-
-  // Render LaTeX in the new message
-  if (typeof renderMathInElement !== "undefined") {
-    renderMathInElement(bubble, {
-      delimiters: [
-        { left: "$$", right: "$$", display: true },
-        { left: "$", right: "$", display: false },
-      ],
-    });
-  }
 
   return bubble;
 }
@@ -131,7 +138,20 @@ async function sendMessage(text) {
     const assistantText = response.content;
     chatHistory.push({ role: "assistant", content: assistantText });
 
-    typingBubble.textContent = assistantText;
+    // Parse and render the assistant's response with Markdown and KaTeX
+    if (typeof marked !== "undefined") {
+      typingBubble.innerHTML = marked.parse(assistantText);
+      if (typeof renderMathInElement !== "undefined") {
+        renderMathInElement(typingBubble, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+          ],
+        });
+      }
+    } else {
+      typingBubble.textContent = assistantText;
+    }
     typingBubble.closest(".message").classList.remove("message--typing");
   } catch (err) {
     // Roll back the failed user message so history stays consistent with what the LLM saw.
