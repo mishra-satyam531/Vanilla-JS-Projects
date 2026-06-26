@@ -3,7 +3,8 @@
   "name": "DSA Buddy",
   "version": "1.0.0",
   "description": "Your personal Data Structures and Algorithms mentor — progressive hints, not spoilers.",
-  "permissions": ["storage", "sidePanel", "activeTab"],
+  "permissions": ["storage", "sidePanel", "activeTab", "scripting"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
   },

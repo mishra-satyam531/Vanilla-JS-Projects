@@ -1,50 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DSA Buddy</title>
-  <link rel="stylesheet" href="sidepanel.css" />
-</head>
-<body>
-  <header class="header">
-    <div class="header__brand">
-      <span class="header__logo" aria-hidden="true">{ }</span>
-      <div>
-        <h1 class="header__title">DSA Buddy</h1>
-        <p class="header__tagline">Hints first. Solutions only when you ask.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DSA Buddy</title>
+    <link rel="stylesheet" href="sidepanel.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="header__brand">
+        <span class="header__logo" aria-hidden="true">{ }</span>
+        <div>
+          <h1 class="header__title">DSA Buddy</h1>
+          <p class="header__tagline">
+            Hints first. Solutions only when you ask.
+          </p>
+        </div>
       </div>
-    </div>
-    <button id="clear-chat" class="btn-ghost" type="button" title="Clear conversation">
-      Clear
-    </button>
-  </header>
-
-  <main id="chat-container" class="chat" role="log" aria-live="polite" aria-label="Chat messages">
-    <div class="welcome" id="welcome">
-      <p>Paste a LeetCode-style problem or describe what you're stuck on.</p>
-      <p class="welcome__hint">I'll guide you with progressive hints — not full code — unless you explicitly ask for the solution.</p>
-    </div>
-  </main>
-
-  <footer class="composer">
-    <form id="chat-form">
-      <textarea
-        id="user-input"
-        rows="2"
-        placeholder="Describe your DSA problem or ask for the next hint..."
-        aria-label="Message input"
-      ></textarea>
-      <button id="send-btn" type="submit" aria-label="Send message">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-        </svg>
+      <button
+        id="clear-chat"
+        class="btn-ghost"
+        type="button"
+        title="Clear conversation"
+      >
+        Clear
       </button>
-    </form>
-    <p id="error-banner" class="error-banner" hidden role="alert"></p>
-  </footer>
+    </header>
 
-  <script src="sidepanel.js"></script>
-</body>
+    <main
+      id="chat-container"
+      class="chat"
+      role="log"
+      aria-live="polite"
+      aria-label="Chat messages"
+    >
+      <div class="welcome" id="welcome">
+        <p>Paste a LeetCode-style problem or describe what you're stuck on.</p>
+        <p class="welcome__hint">
+          I'll guide you with progressive hints — not full code — unless you
+          explicitly ask for the solution.
+        </p>
+      </div>
+    </main>
+
+    <footer class="composer">
+      <form id="chat-form">
+        <textarea
+          id="user-input"
+          rows="2"
+          placeholder="Describe your DSA problem or ask for the next hint..."
+          aria-label="Message input"
+        ></textarea>
+        <button id="send-btn" type="submit" aria-label="Send message">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M22 2L11 13"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M22 2L15 22L11 13L2 9L22 2Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </form>
+      <p id="error-banner" class="error-banner" hidden role="alert"></p>
+    </footer>
+
+    <script src="sidepanel.js"></script>
+  </body>
 </html>

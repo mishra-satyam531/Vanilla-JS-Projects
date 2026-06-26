@@ -58,6 +58,13 @@ TONE:
 - Be concise but precise. Use examples with small inputs when clarifying.
 - If the user explicitly requests the solution code, you may then provide a clean, commented implementation and brief explanation.
 
+FORMATTING RULES:
+- NEVER use LaTeX mathematical notation (no $$, no $, no \frac{}, no \text{}, etc.)
+- Write all mathematical expressions in plain text using simple words and symbols
+- For example: instead of "$$\text{Count of } target > \frac{\text{Length of subarray}}{2}$$", write "Count of target is greater than half the length of the subarray"
+- Use simple comparisons like "greater than", "less than", "equal to" instead of mathematical symbols when possible
+- Keep all explanations in readable plain text format
+
 Remember: your default mode is mentor, not answer key.`;
 
 // ── Message handler: bridge between side panel and LLM APIs ───────────────
@@ -81,20 +88,18 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
  * @returns {Promise<string>} assistant reply text
  */
 async function handleChat(messages) {
-  const { provider, geminiKey, groqKey, apiKey } = await chrome.storage.local.get([
-    "provider",
-    "geminiKey",
-    "groqKey",
-    "apiKey",
-  ]);
+  const { provider, geminiKey, groqKey, apiKey } =
+    await chrome.storage.local.get([
+      "provider",
+      "geminiKey",
+      "groqKey",
+      "apiKey",
+    ]);
 
   const resolvedProvider = provider || "gemini";
 
   // Pick the key that matches the selected provider (geminiKey and groqKey are stored separately).
-  let activeKey =
-    resolvedProvider === "groq"
-      ? groqKey
-      : geminiKey;
+  let activeKey = resolvedProvider === "groq" ? groqKey : geminiKey;
 
   // Fallback for users who still have the legacy single apiKey in storage.
   if (!activeKey && apiKey) {
@@ -102,9 +107,10 @@ async function handleChat(messages) {
   }
 
   if (!activeKey) {
-    const providerLabel = resolvedProvider === "groq" ? "Groq" : "Google Gemini";
+    const providerLabel =
+      resolvedProvider === "groq" ? "Groq" : "Google Gemini";
     throw new Error(
-      `No ${providerLabel} API key found. Open DSA Buddy settings (right-click extension icon → Options) and save your key.`
+      `No ${providerLabel} API key found. Open DSA Buddy settings (right-click extension icon → Options) and save your key.`,
     );
   }
 
@@ -116,7 +122,9 @@ async function handleChat(messages) {
     return callGemini(activeKey, messages);
   }
 
-  throw new Error(`Unknown provider "${resolvedProvider}". Choose Google Gemini or Groq in Options.`);
+  throw new Error(
+    `Unknown provider "${resolvedProvider}". Choose Google Gemini or Groq in Options.`,
+  );
 }
 
 /**
@@ -152,7 +160,9 @@ async function callGemini(apiKey, messages) {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error?.message || `Gemini API error (${response.status})`);
+    throw new Error(
+      data.error?.message || `Gemini API error (${response.status})`,
+    );
   }
 
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -180,19 +190,24 @@ async function callGroq(apiKey, messages) {
     temperature: 0.7,
   };
 
-  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
+  const response = await fetch(
+    "https://api.groq.com/openai/v1/chat/completions",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify(payload),
     },
-    body: JSON.stringify(payload),
-  });
+  );
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error?.message || `Groq API error (${response.status})`);
+    throw new Error(
+      data.error?.message || `Groq API error (${response.status})`,
+    );
   }
 
   return data.choices[0].message.content;

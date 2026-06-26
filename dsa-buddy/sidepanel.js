@@ -71,14 +71,39 @@ function setLoading(loading) {
 async function sendMessage(text) {
   hideError();
 
-  // Persist user turn in history before calling the service worker.
-  chatHistory.push({ role: "user", content: text });
+  // Show only the user's actual message in the chat
   appendMessageToDOM("user", text);
 
-  const typingBubble = appendMessageToDOM("assistant", "Thinking...", { isTyping: true });
+  const typingBubble = appendMessageToDOM("assistant", "Thinking...", {
+    isTyping: true,
+  });
   setLoading(true);
 
   try {
+    // Try to extract page content from the active tab
+    let pageContent = "";
+    try {
+      pageContent = await extractPageContent();
+    } catch (err) {
+      // Silently fail if page extraction doesn't work - user can still chat normally
+      console.log("Could not extract page content:", err.message);
+    }
+
+    // Build the actual message to send to LLM
+    let messageToSend = text;
+    if (pageContent) {
+      // Limit content to avoid overwhelming the LLM
+      const maxLength = 3000;
+      const truncatedContent =
+        pageContent.length > maxLength
+          ? pageContent.substring(0, maxLength) + "..."
+          : pageContent;
+      messageToSend = `Here is the problem I am looking at:\n\n${truncatedContent}\n\n${text}`;
+    }
+
+    // Persist the enhanced message in history for LLM context
+    chatHistory.push({ role: "user", content: messageToSend });
+
     // Delegate network + system prompt assembly to background.js (has storage + fetch access).
     const response = await chrome.runtime.sendMessage({
       type: "CHAT",
@@ -86,7 +111,9 @@ async function sendMessage(text) {
     });
 
     if (!response?.ok) {
-      throw new Error(response?.error || "Unknown error from background service worker.");
+      throw new Error(
+        response?.error || "Unknown error from background service worker.",
+      );
     }
 
     const assistantText = response.content;
@@ -98,7 +125,10 @@ async function sendMessage(text) {
     // Roll back the failed user message so history stays consistent with what the LLM saw.
     chatHistory.pop();
     typingBubble.closest(".message")?.remove();
-    showError(err.message || "Failed to get a response. Check your API key in extension settings.");
+    showError(
+      err.message ||
+        "Failed to get a response. Check your API key in extension settings.",
+    );
   } finally {
     setLoading(false);
     userInput.focus();
@@ -135,5 +165,56 @@ clearBtn.addEventListener("click", () => {
   hideError();
   userInput.focus();
 });
+
+/**
+ * Extract page content from the active tab.
+ * For LeetCode, targets the problem description. Falls back to visible text for other sites.
+ */
+async function extractPageContent() {
+  try {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+
+    if (!tab || !tab.id) {
+      throw new Error("No active tab found");
+    }
+
+    const result = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: () => {
+        // Check if this is a LeetCode problem page
+        if (window.location.hostname.includes("leetcode.com")) {
+          // Try to find the problem description element
+          const problemDescEl = document.querySelector(
+            '[data-cy="question-title"]',
+          )?.parentElement?.parentElement;
+          if (problemDescEl) {
+            return problemDescEl.innerText.trim();
+          }
+          // Fallback to other common LeetCode selectors
+          const fallbackEl =
+            document.querySelector(".elfjS") ||
+            document.querySelector("[data-cy='question-description']");
+          if (fallbackEl) {
+            return fallbackEl.innerText.trim();
+          }
+        }
+
+        // For non-LeetCode sites, return the visible body text
+        return document.body.innerText.trim();
+      },
+    });
+
+    if (result && result[0] && result[0].result) {
+      return result[0].result;
+    }
+
+    throw new Error("Failed to extract page content");
+  } catch (err) {
+    throw new Error(`Could not read page content: ${err.message}`);
+  }
+}
 
 userInput.focus();
