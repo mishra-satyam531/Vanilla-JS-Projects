@@ -24,8 +24,11 @@ const PROVIDER_KEY_FIELDS = {
 async function loadSettings() {
   const stored = await chrome.storage.local.get([...STORAGE_KEYS, "apiKey"]);
 
+  // Default to Gemini if no provider is stored
   if (stored.provider) {
     providerSelect.value = stored.provider;
+  } else {
+    providerSelect.value = "gemini";
   }
 
   if (stored.geminiKey) {
@@ -65,7 +68,10 @@ form.addEventListener("submit", async (event) => {
   const activeKeyConfig = PROVIDER_KEY_FIELDS[provider];
 
   if (!activeKeyConfig.input.value.trim()) {
-    showStatus(`Please enter a ${activeKeyConfig.label} API key for the selected provider.`, "error");
+    showStatus(
+      `Please enter a ${activeKeyConfig.label} API key for the selected provider.`,
+      "error",
+    );
     return;
   }
 

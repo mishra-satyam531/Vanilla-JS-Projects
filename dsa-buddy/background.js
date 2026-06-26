@@ -17,7 +17,7 @@ chrome.sidePanel
 
 /** Default model ID for each provider. */
 const PROVIDER_MODELS = {
-  gemini: "gemini-3.5-flash",
+  gemini: "gemini-1.5-flash",
   groq: "llama-3.3-70b-versatile",
 };
 
@@ -58,12 +58,10 @@ TONE:
 - Be concise but precise. Use examples with small inputs when clarifying.
 - If the user explicitly requests the solution code, you may then provide a clean, commented implementation and brief explanation.
 
-FORMATTING RULES:
-- NEVER use LaTeX mathematical notation (no $$, no $, no \frac{}, no \text{}, etc.)
-- Write all mathematical expressions in plain text using simple words and symbols
-- For example: instead of "$$\text{Count of } target > \frac{\text{Length of subarray}}{2}$$", write "Count of target is greater than half the length of the subarray"
-- Use simple comparisons like "greater than", "less than", "equal to" instead of mathematical symbols when possible
-- Keep all explanations in readable plain text format
+FORMATTING:
+- Use LaTeX mathematical notation for formulas (e.g., $O(n \log n)$, $\frac{n}{2}$)
+- This will be rendered beautifully using KaTeX in the extension
+- Keep explanations clear and readable
 
 Remember: your default mode is mentor, not answer key.`;
 

@@ -52,12 +52,22 @@ function appendMessageToDOM(role, content, { isTyping = false } = {}) {
 
   const bubble = document.createElement("div");
   bubble.className = "message__bubble";
-  bubble.textContent = content;
+  bubble.innerHTML = content;
 
   wrapper.appendChild(roleLabel);
   wrapper.appendChild(bubble);
   chatContainer.appendChild(wrapper);
   chatContainer.scrollTop = chatContainer.scrollHeight;
+
+  // Render LaTeX in the new message
+  if (typeof renderMathInElement !== "undefined") {
+    renderMathInElement(bubble, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+      ],
+    });
+  }
 
   return bubble;
 }
@@ -80,13 +90,15 @@ async function sendMessage(text) {
   setLoading(true);
 
   try {
-    // Try to extract page content from the active tab
+    // Only extract page content on the first message to prevent context explosion
     let pageContent = "";
-    try {
-      pageContent = await extractPageContent();
-    } catch (err) {
-      // Silently fail if page extraction doesn't work - user can still chat normally
-      console.log("Could not extract page content:", err.message);
+    if (chatHistory.length === 0) {
+      try {
+        pageContent = await extractPageContent();
+      } catch (err) {
+        // Silently fail if page extraction doesn't work - user can still chat normally
+        console.log("Could not extract page content:", err.message);
+      }
     }
 
     // Build the actual message to send to LLM
